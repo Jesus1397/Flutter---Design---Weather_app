@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:http/io_client.dart';
 import 'package:weather_app/models/weather_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;

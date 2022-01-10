@@ -20,24 +20,25 @@ class _HomePageState extends State<HomePage>
   AnimationController _animationController;
   Animation<double> leftToRight;
   Animation<double> botToTop;
+  bool firstAnim = false;
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 4000),
+      duration: Duration(milliseconds: 600),
     );
 
     leftToRight = Tween(begin: 300.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Interval(0.0, 1.0, curve: Curves.bounceOut),
+        curve: Interval(0.0, 1.0, curve: Curves.easeOut),
       ),
     );
     botToTop = Tween(begin: 100.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Interval(0.0, 1.0, curve: Curves.bounceOut),
+        curve: Interval(0.0, 1.0, curve: Curves.easeOut),
       ),
     );
   }
@@ -65,10 +66,10 @@ class _HomePageState extends State<HomePage>
                   locationData.getLocation.lon,
                 ),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done &&
-                      snapshot.hasData &&
-                      snapshot.data != null) {
-                    _animationController.forward();
+                  if (snapshot.hasData) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      _animationController.forward(from: 0.0);
+                    }
                     DataWeather dataWeather = getDataWeather(
                       weatherData.getweatherResponse.current.weather[0].id,
                     );
@@ -90,6 +91,7 @@ class _HomePageState extends State<HomePage>
                           Widget child,
                         ) {
                           return Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               HeaderWidget(
                                 controller: _animationController,
@@ -106,10 +108,14 @@ class _HomePageState extends State<HomePage>
                                 ),
                               ),
                               SizedBox(height: 30),
-                              DaysWidget(),
-                              SizedBox(height: 10),
-                              HoursWidget(
-                                animation: botToTop.value,
+                              Column(
+                                children: [
+                                  DaysWidget(),
+                                  SizedBox(height: 10),
+                                  HoursWidget(
+                                    animation: botToTop.value,
+                                  ),
+                                ],
                               ),
                             ],
                           );
